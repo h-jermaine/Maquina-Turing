@@ -1,40 +1,32 @@
 #ifndef RESOURCE_H_
 #define RESOURCE_H_
-
-#define DENO 2342;
-
 #include <iostream>
-#define BT1 101
-#define BT2 102
-#define BT3 103
-
-#define CAJALEER 202
-
-#define BEDIT1 151
-#define BEDIT2 152
-#define BEDIT3 153
-
-HWND deno;
+#include <map>
+#include <string.h>
+#define BOTON1 1001
+#define BOTON2 1002
+#define BOTON3 1003
+#define CAJAENTRADA 1004
+#define CAJAEDIT1 1051
+#define CAJAEDIT2 1052
+#define CAJAEDIT3 1053
 
 HWND boton1;
 HWND boton2;
 HWND boton3;
 
-HWND cajaLeer;
+HWND cajaEntrada;
 HWND botonLeer;
 
 HWND columnaMt;
 HWND filaMt;
 HWND estadoMt;
 
-HWND hEdtNum1;
-HWND hEdtNum2;
-HWND hEdtNum3;
+HWND cajaEditable1;
+HWND cajaEditable2;
+HWND cajaEditable3;
 
-WORD Comando;
-
-#include <map>
-#include <string.h>
+WORD Entrada;
 
 int numeroEstado(std::string numEs);
 
@@ -79,7 +71,7 @@ class Matriz{
         else{
             Columna ColObj;
             ColObj.Insertar(Fil,S);
-            M[Col]=ColObj;
+            M[Col] = ColObj;
         }
     }
 
@@ -118,71 +110,10 @@ class Matriz{
             }
     }
 
-    void Verificar(HDC hdc, char textoC[]){
-        std::string tmp;
-        std::string estado1 = "q0";
-        std::string estado2;
-        std::string simbolo;
-        std::string columna;
-        std::string leerCinta;
-        std::string tmpLeerCin;
-        std::string tempCaja = textoC;
-        int i = 1;
-        while(tempCaja[i] != 'B'){
-            tmp = tempCaja[i];
-            std::map <std::string,Columna>::iterator itr = M.find(tmp);
-            if(itr != M.end()){
-                std::map <std::string, std::string> tmpnose = (*itr).second.C;
-                leerCinta = tmpnose[estado1];
-                if(leerCinta != ""){
-
-                int cont = 0;
-                for(int j = 0; j < leerCinta.length(); j++){
-                    if((leerCinta[j] != ',') && (cont == 0))
-                        estado2 += leerCinta[j];
-
-                    if((leerCinta[j] != ',') && (cont == 1))
-                        simbolo += leerCinta[j];
-
-                    if((leerCinta[j] != ',') && (cont == 2))
-                        columna += leerCinta[j];
-
-                    if(leerCinta[j] == ',')
-                        cont++;
-                }
-                //cout << estado2 << " " << simbolo << " " << columna << endl;
-                estado1 = estado2;
-                tempCaja[i] = simbolo[0];
-                if(columna == "D")
-                    i++;
-                if(columna == "I")
-                    i--;
-                if(columna == "S")
-                    break;
-                estado2 = simbolo = columna = "";
-                }
-                else
-                    break;
-            }
-            else
-                break;
-        }
-            //std::cout << tempCaja << std::endl;
-            for(int i = 0; i < tempCaja.length(); i++){
-                textoC[i] = tempCaja[i];
-            }
-            std::string cpTextoC = textoC;
-            char arr[1];
-            for(int i = 0; i < cpTextoC.length(); i++){
-                arr[0] = textoC[i];
-                TextOut(hdc, 100 + (i * 20), 60, arr, 1);
-            }
-    }
-
-    int Verificar2(char cptextoCajaWM[], std::string &estadoVr, std::string &senteciaVr, int &indiceVr){
-        char cpTempTextoCajaWM [1] = "";
-        cpTempTextoCajaWM[0] = cptextoCajaWM[indiceVr];
-        std::string columnaVr = cpTempTextoCajaWM;
+    int Verificar(char cptextoCajaMT[], std::string &estadoVr, std::string &senteciaVr, int &indiceVr){
+        char cpTempTextoCajaMT [1] = "";
+        cpTempTextoCajaMT[0] = cptextoCajaMT[indiceVr];
+        std::string columnaVr = cpTempTextoCajaMT;
         std::string estadoTemp = "";
         std::string simbolo = "";
         std::string idicador = "";
@@ -197,19 +128,16 @@ class Matriz{
                 for(int i = 0; i < contenidoFirst.length(); i++){
                     if((contenidoFirst[i] != ',') && (contador == 0))
                         estadoTemp += contenidoFirst[i];
-
                     if((contenidoFirst[i] != ',') && (contador == 1))
                         simbolo += contenidoFirst[i];
-
                     if((contenidoFirst[i] != ',') && (contador == 2))
                         idicador += contenidoFirst[i];
-
                     if(contenidoFirst[i] == ',')
                         contador++;
                 }
                 estadoVr = estadoTemp;
-                cpTempTextoCajaWM[0] = simbolo[0];
-                cptextoCajaWM[indiceVr] = cpTempTextoCajaWM[0];
+                cpTempTextoCajaMT[0] = simbolo[0];
+                cptextoCajaMT[indiceVr] = cpTempTextoCajaMT[0];
 
                 if(idicador == "D")
                     return indiceVr += 1;
@@ -239,3 +167,4 @@ int numeroEstado(std::string numEs){
 }
 
 #endif // RESOURCE_H_
+

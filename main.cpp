@@ -10,10 +10,10 @@
 #include <iostream>
 #include "resource.h"
 
-char columnaWM[1024] = "";
-char filaWM[1024] = "";
-char estadoWM[1024] = "";
-char textoCajaWM[1024] = "";
+char columnaMT[1024] = "";
+char filaMT[1024] = "";
+char estadoMT[1024] = "";
+char textoCajaMT[1024] = "";
 Matriz M;
 std::string estadoVr = "q0", senteciaVr = "";
 int indiceVr = 0;
@@ -59,7 +59,7 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
     hwnd = CreateWindowEx (
            0,                   /* Extended possibilites for variation */
            szClassName,         /* Classname */
-           _T("Code::Blocks Machine Turing By Marshall Lee"),       /* Title Text */
+           _T("M-T"),       /* Title Text */
            WS_OVERLAPPEDWINDOW, /* default window */
            CW_USEDEFAULT,       /* Windows decides the position */
            CW_USEDEFAULT,       /* where the window ends up on the screen */
@@ -129,80 +129,82 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
     {
         case WM_CREATE:{
 
-            cajaLeer = CreateWindowEx(0, _T("EDIT"), _T(""), ES_LEFT|WS_CHILD|WS_VISIBLE|WS_BORDER|WS_TABSTOP|ES_MULTILINE, 150, 20, 200, 30,
-                                       hwnd, (HMENU)CAJALEER,hThisInstance, NULL);
+            cajaEntrada = CreateWindowEx(0, _T("EDIT"), _T(""), ES_LEFT|WS_CHILD|WS_VISIBLE|WS_BORDER|WS_TABSTOP|ES_MULTILINE, 150, 20, 200, 30,
+                                       hwnd, (HMENU)CAJAENTRADA,hThisInstance, NULL);
 
             //Para mostrar el texto [Col:]
             columnaMt = CreateWindowEx(0, _T("STATIC"), _T("Col: "), SS_CENTER|SS_NOTIFY|WS_CHILD|WS_VISIBLE|WS_TABSTOP, 10, 105, 25, 20,
                                      hwnd, 0, 0, 0);
             //Caja editable de columna
-            hEdtNum1 = CreateWindowEx(0, _T("EDIT"), _T(""), ES_LEFT|WS_CHILD|WS_VISIBLE|WS_BORDER|WS_TABSTOP|ES_MULTILINE, 40, 100, 100, 30,
-                                       hwnd, (HMENU)BEDIT1,hThisInstance, NULL);
+            cajaEditable1 = CreateWindowEx(0, _T("EDIT"), _T(""), ES_LEFT|WS_CHILD|WS_VISIBLE|WS_BORDER|WS_TABSTOP|ES_MULTILINE, 40, 100, 100, 30,
+                                       hwnd, (HMENU)CAJAEDIT1,hThisInstance, NULL);
             //Para mostrar el texto [Col:]
             filaMt = CreateWindowEx(0, _T("STATIC"), _T("Est: "), SS_CENTER|SS_NOTIFY|WS_CHILD|WS_VISIBLE|WS_TABSTOP, 150, 105, 25, 20,
                                      hwnd, 0, 0, 0);
             //Caja editable Fila
-            hEdtNum2 = CreateWindowEx(0, _T("EDIT"), _T(""), ES_LEFT|WS_CHILD|WS_VISIBLE|WS_BORDER|WS_TABSTOP|ES_MULTILINE, 180, 100, 100, 30,
-                                       hwnd, (HMENU)BEDIT2,hThisInstance, NULL);
+            cajaEditable2 = CreateWindowEx(0, _T("EDIT"), _T(""), ES_LEFT|WS_CHILD|WS_VISIBLE|WS_BORDER|WS_TABSTOP|ES_MULTILINE, 180, 100, 100, 30,
+                                       hwnd, (HMENU)CAJAEDIT2,hThisInstance, NULL);
             //Para mostrar el texto [Est:]
             estadoMt = CreateWindowEx(0, _T("STATIC"), _T("Est: "), SS_CENTER|SS_NOTIFY|WS_CHILD|WS_VISIBLE|WS_TABSTOP, 20, 25, 25, 20,
                                      hwnd, 0, 0, 0);
             //Caja editable Estado
-            hEdtNum3 = CreateWindowEx(0, _T("EDIT"), _T(""), ES_LEFT|WS_CHILD|WS_VISIBLE|WS_BORDER|WS_TABSTOP|ES_MULTILINE, 325, 100, 150, 30,
-                                       hwnd, (HMENU)BEDIT3,hThisInstance, NULL);
+            cajaEditable3 = CreateWindowEx(0, _T("EDIT"), _T(""), ES_LEFT|WS_CHILD|WS_VISIBLE|WS_BORDER|WS_TABSTOP|ES_MULTILINE, 325, 100, 150, 30,
+                                       hwnd, (HMENU)CAJAEDIT3,hThisInstance, NULL);
 
-            boton1 = CreateWindowEx(0, "button", ("Insertar"), WS_VISIBLE|WS_CHILD, 495, 100, 70, 30, hwnd, (HMENU)BT1,0, 0);
-            boton2 = CreateWindowEx(0, "button", ("Eliminar"), WS_VISIBLE|WS_CHILD, 575, 100, 70, 30, hwnd, (HMENU)BT2,0, 0);
-            boton3 = CreateWindowEx(0, "button", ("Probar"), WS_VISIBLE|WS_CHILD, 370, 20, 70, 30, hwnd, (HMENU)BT3,0, 0);
+            boton1 = CreateWindowEx(0, "button", ("Insertar"), WS_VISIBLE|WS_CHILD, 495, 100, 70, 30, hwnd, (HMENU)BOTON1,0, 0);
+            boton2 = CreateWindowEx(0, "button", ("Eliminar"), WS_VISIBLE|WS_CHILD, 575, 100, 70, 30, hwnd, (HMENU)BOTON2,0, 0);
+            boton3 = CreateWindowEx(0, "button", ("Probar"), WS_VISIBLE|WS_CHILD, 370, 20, 70, 30, hwnd, (HMENU)BOTON3,0, 0);
         }
             break;
         case WM_COMMAND:
-            Comando = LOWORD(wParam);
+            Entrada = LOWORD(wParam);
             InvalidateRect(hwnd, NULL, TRUE);
             break;
         case WM_PAINT:
             hdc = BeginPaint(hwnd, &ps);
             TextOut(hdc, 20, 60, "Resultado: ", 11);
-            switch(Comando){
-                case BT1:{
-                    filedit = GetDlgItem(hwnd, BEDIT1); // I tried with and without this
-                    GetWindowText(filedit, columnaWM, sizeof(columnaWM));
-                    filedit = GetDlgItem(hwnd, BEDIT2); // I tried with and without this
-                    GetWindowText(filedit, filaWM, sizeof(filaWM));
-                    filedit = GetDlgItem(hwnd, BEDIT3); // I tried with and without this
-                    GetWindowText(filedit, estadoWM, sizeof(estadoWM));
-                    filedit = GetDlgItem(hwnd, CAJALEER); // I tried with and without this
-                    GetWindowText(filedit, textoCajaWM, sizeof(textoCajaWM));
-                    std::string columnaWMcp = columnaWM;
-                    std::string estadoWMcp = estadoWM;
-                    std::string filaWMcp = filaWM;
-                    if((columnaWMcp != "") && (estadoWMcp != "") && (filaWMcp != ""))
-                        M.Insertar(columnaWM, filaWM, estadoWM);
+            switch(Entrada){
+                case BOTON1:{
+                    filedit = GetDlgItem(hwnd, CAJAEDIT1); // I tried with and without this
+                    GetWindowText(filedit, columnaMT, sizeof(columnaMT));
+                    filedit = GetDlgItem(hwnd, CAJAEDIT2); // I tried with and without this
+                    GetWindowText(filedit, filaMT, sizeof(filaMT));
+                    filedit = GetDlgItem(hwnd, CAJAEDIT3); // I tried with and without this
+                    GetWindowText(filedit, estadoMT, sizeof(estadoMT));
+                    filedit = GetDlgItem(hwnd, CAJAENTRADA); // I tried with and without this
+                    GetWindowText(filedit, textoCajaMT, sizeof(textoCajaMT));
+                    std::string columnaMTcp = columnaMT;
+                    std::string estadoMTcp = estadoMT;
+                    std::string filaMTcp = filaMT;
+                    if((columnaMTcp != "") && (estadoMTcp != "") && (filaMTcp != ""))
+                        M.Insertar(columnaMT, filaMT, estadoMT);
                     break;
                 }
-                case BT2:{
-                    filedit = GetDlgItem(hwnd, BEDIT1); // I tried with and without this
-                    GetWindowText(filedit, columnaWM, sizeof(columnaWM));
-                    filedit = GetDlgItem(hwnd, BEDIT2); // I tried with and without this
-                    GetWindowText(filedit, filaWM, sizeof(filaWM));
-                    std::string columnaWMcp = columnaWM;
-                    std::string filaWMcp = filaWM;
-                    if((columnaWMcp != "") && (filaWMcp != ""))
-                        M.Eliminar(columnaWM, filaWM);
+                case BOTON2:{
+                    filedit = GetDlgItem(hwnd, CAJAEDIT1); // I tried with and without this
+                    GetWindowText(filedit, columnaMT, sizeof(columnaMT));
+                    filedit = GetDlgItem(hwnd, CAJAEDIT2); // I tried with and without this
+                    GetWindowText(filedit, filaMT, sizeof(filaMT));
+                    std::string columnaMTcp = columnaMT;
+                    std::string filaMTcp = filaMT;
+                    if((columnaMTcp != "") && (filaMTcp != ""))
+                        M.Eliminar(columnaMT, filaMT);
                     break;
                 }
-                case BT3:{
+                case BOTON3:{
                     if(indiceVr == 0){
-                        filedit = GetDlgItem(hwnd, CAJALEER); // I tried with and without this
-                        GetWindowText(filedit, textoCajaWM, sizeof(textoCajaWM));
+                        filedit = GetDlgItem(hwnd, CAJAENTRADA); // I tried with and without this
+                        GetWindowText(filedit, textoCajaMT, sizeof(textoCajaMT));
+                        std::string cpTextoCajaMT = textoCajaMT;
+                        TextOut(hdc, 100, 60, textoCajaMT, cpTextoCajaMT.length());
                         indiceVr++;
                     }
-                    std::string cpCajaleer = textoCajaWM;
-                    if(cpCajaleer != ""){
-                        indiceVr = M.Verificar2(textoCajaWM, estadoVr, senteciaVr, indiceVr);
+                    std::string cpCajaEntrada = textoCajaMT;
+                    if(cpCajaEntrada != ""){
+                        indiceVr = M.Verificar(textoCajaMT, estadoVr, senteciaVr, indiceVr);
 
-                        std::string cpTextoCajaWM = textoCajaWM;
-                        TextOut(hdc, 100, 60, textoCajaWM, cpTextoCajaWM.length());
+                        std::string cpTextoCajaMT = textoCajaMT;
+                        TextOut(hdc, 100, 60, textoCajaMT, cpTextoCajaMT.length());
 
                         char cpTempEstadoVr [senteciaVr.length() + 1];
                         for(int i = 0; i < senteciaVr.length(); i++)
@@ -213,14 +215,12 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
                 }
             }
             M.Mostrar(hdc);
-            //M.Verificar(hdc, textoCajaWM);
-            //funtionPaintText(hdc, fila, columna, estado, textoCaja);
             EndPaint(hwnd, &ps);
         break;
         case WM_DESTROY:
-            PostQuitMessage (0);       /* send a WM_QUIT to the message queue */
+            PostQuitMessage (0);
             break;
-        default:                      /* for messages that we don't deal with */
+        default:
             return DefWindowProc (hwnd, message, wParam, lParam);
     }
     return 0;
